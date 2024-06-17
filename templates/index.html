@@ -1,0 +1,499 @@
+{% load static %}
+<!DOCTYPE HTML>
+<html>
+<head>
+  <link rel="stylesheet" href="{% static 'css/style.css' %} ">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/sidebars/">
+
+    <!-- Bootstrap core CSS -->
+    <link href="/docs/5.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="apple-touch-icon" href="/docs/5.0/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
+    <link rel="icon" href="/docs/5.0/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+    <link rel="icon" href="/docs/5.0/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
+    <link rel="manifest" href="/docs/5.0/assets/img/favicons/manifest.json">
+    <link rel="mask-icon" href="/docs/5.0/assets/img/favicons/safari-pinned-tab.svg" color="#7952b3">
+    <link rel="icon" href="/docs/5.0/assets/img/favicons/favicon.ico">
+    <!-- Custom styles for this template -->
+
+
+  </head>
+  <body>
+    <div class="container-fluid pt-2">
+    
+      <nav class="navbar navbar-expand-lg navbar-light bg-primary">
+        <a class="navbar-brand navbar-dark mx-3" href="{% url 'index' %}"><img src="{% static 'management.avif' %}" width="50" height="50" style=" border-radius: 60%;"></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ml-auto navbar-dark">
+            <li class="nav-item">
+              <a class="nav-link active" href="{% url 'add_project' %}">Add Project </a>
+            </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'logout' %}"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#ffffff" height="20px" width="20px" version="1.1" id="Capa_1" viewBox="0 0 384.971 384.971" xml:space="preserve" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"/><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/><g id="SVGRepo_iconCarrier"> <g> <g id="Sign_Out"> <path d="M180.455,360.91H24.061V24.061h156.394c6.641,0,12.03-5.39,12.03-12.03s-5.39-12.03-12.03-12.03H12.03 C5.39,0.001,0,5.39,0,12.031V372.94c0,6.641,5.39,12.03,12.03,12.03h168.424c6.641,0,12.03-5.39,12.03-12.03 C192.485,366.299,187.095,360.91,180.455,360.91z"/> <path d="M381.481,184.088l-83.009-84.2c-4.704-4.752-12.319-4.74-17.011,0c-4.704,4.74-4.704,12.439,0,17.179l62.558,63.46H96.279 c-6.641,0-12.03,5.438-12.03,12.151c0,6.713,5.39,12.151,12.03,12.151h247.74l-62.558,63.46c-4.704,4.752-4.704,12.439,0,17.179 c4.704,4.752,12.319,4.752,17.011,0l82.997-84.2C386.113,196.588,386.161,188.756,381.481,184.088z"/> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> </g> </g></svg> <strong>Logout</strong></a>
+          </li>
+        </ul>
+        </div>
+      </nav>
+      <div class="modal fade order_modal" id="addtask" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                <div class="choose_task">
+                  <h5 class="mb-0">Add Task</h5>
+                </div>
+              </h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form class="myform" method="post" style="margin: 20px;" id="addtaskForm">
+                {% csrf_token %}
+                <div class="form-group">
+                  <label for="id_name">Name:</label>
+                  <input type="text" name="name" class="form-control" required><br>
+              
+                  <label for="id_status">Status:</label>
+                  <select name="status" class="form-select">
+                    <option selected value="pending">Pending</option>
+                    <option value="inprogress">In Progress</option>
+                    <option value="testing">Testing</option>
+                    <option value="completed">Completed</option>
+                  </select><br>
+              
+                  <label for="id_assigned_to">Assigned To:</label>
+                  <select name="assigned_to" class="form-select" required>
+                    <option selected>------</option>
+                    {% for user in users %}
+                        <option value="{{ user.id }}">{{ user.username }}</option>
+                    {% endfor %}
+                  </select><br>
+              
+                  <label for="id_assigned_by">Assigned By:</label>
+                  <select name="assigned_by" class="form-select" required>
+                    <option selected>------</option>
+                    {% for user in users %}
+                        <option value="{{ user.id }}">{{ user.username }}</option>
+                    {% endfor %}
+                  </select>
+              
+                </div><br>
+                <button type="submit" class="btn btn-primary btn-block">Add Task</button>
+            </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Modal --> 
+
+      <div class="modal fade order_modal" id="updatetask" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                <div class="choose_task">
+                  <h5 class="mb-0">Update Task</h5>
+                </div>
+              </h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form class="myform" method="post" style="margin: 20px;" id="updatetaskForm">
+                {% csrf_token %}
+                <div class="form-group">
+                  <label for="id_name">Name:</label>
+                  <input type="text" name="name" class="form-control" required><br>
+                  <label for="task_description">Description:</label>
+                  <textarea name="description" class="form-control"  required></textarea>
+
+                </div><br>
+                <button type="submit" name="update_task" class="btn btn-primary btn-block">Update Task</button>
+            </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Modal --> 
+
+        <div class="row">
+          <div class="col-md-3">
+              <main>            
+                <div class="d-flex flex-column" style="width: 280px;height:100vh;">
+                  <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-decoration-none">
+                    <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+                    <span class="fs-4" style="padding-top:20px">Projects</span>
+                  </a>
+                  <hr>
+                 
+                  <ul class="nav nav-pills flex-column mb-auto" style="margin-left:30px;">
+                    {% for projects in projects %}
+                    <li class="nav-item" style="display: flex; align-items: center;">
+                        <button class="nav-link project-link" aria-current="page" data-project-id="{{ projects.id }}">
+                        {{projects.projects}} 
+                      </button>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 24 24" fill="#0d6efd" stroke="#0d6efd" style="margin-left: 5px; cursor: pointer;" onclick="openModal('{{ projects.id }}')"><g id="SVGRepo_bgCarrier" stroke-width="0"/><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/><g id="SVGRepo_iconCarrier"> <title/> <g id="Complete"> <g data-name="add" id="add-2"> <g> <line fill="none" stroke="#0d6efd" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="12" x2="12" y1="19" y2="5"/> <line fill="none" stroke="#0d6efd" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="5" x2="19" y1="12" y2="12"/> </g> </g> </g> </g></svg>
+                    </li>
+                    {% endfor %}
+                  </ul>
+              
+                </div>
+              </main>          
+          </div> 
+          
+          <div class="col-md-9 pt-2">  
+    
+            <div class="row">
+               
+          <div class="col-md-3" ondrop="drop(event, 'completed')" ondragover="allowDrop(event)" >
+            <h6 style=" background-color: #c7defe;color:black;padding:2.5% 18%;font-size: 1.3rem;">Completed</h6>
+            {% for task in tasks_completed %}
+              <div class="draggable-item" id="drag_{{ task.id }}" draggable="true" ondragstart="drag(event)" style="margin-top:15px">
+                <p style="background-color: #f2f2f2; padding: 10px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); margin: 0;" onclick="taskModal('{{ task.id }}')"></p>
+              </div>
+            {% endfor %}
+          </div>
+      
+          <div class="col-md-3" ondrop="drop(event, 'inprogress')" ondragover="allowDrop(event)" >
+            <h6 style=" background-color:#b1dbc8;color:black;padding:2% 16%;font-size: 1.3rem;">In Progress</h6>
+            {% for task in tasks_inprogress %}
+              <div class="draggable-item" id="drag_{{ task.id }}" draggable="true" ondragstart="drag(event)" style="margin-top:15px">
+                <p style="background-color: #f2f2f2; padding: 10px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); margin: 0;" onclick="taskModal('{{ task.id }}')"</p>
+              </div>
+            {% endfor %}
+          </div>
+     
+
+      
+          <div class="col-md-3" ondrop="drop(event, 'pending')" ondragover="allowDrop(event)" >
+            <h6 style="background-color: #c7defe;color:black;padding:2% 25%; font-size: 1.3rem;">Pending</h6>
+            {% for task in tasks_pending %}
+              <div class="draggable-item" id="drag_{{ task.id }}" draggable="true" ondragstart="drag(event)" style="margin-top:15px" >
+                <p style="background-color: #f2f2f2; padding: 10px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); margin: 0;" onclick="taskModal('{{ task.id }}')"></p>
+              </div>
+            {% endfor %}
+          </div>
+      
+          <div class="col-md-3" ondrop="drop(event, 'testing')" ondragover="allowDrop(event)" >
+            <h6  style="background-color: #b1dbc8;color:black;padding:2% 25%; font-size: 1.3rem;">Testing</h6>
+            {% for task in tasks_testing %}
+              <div class="draggable-item" id="drag_{{ task.id }}" draggable="true" ondragstart="drag(event)" style="margin-top:15px" >
+                <p style="background-color: #f2f2f2; padding: 10px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); margin: 0;" onclick="taskModal('{{ task.id }}')"></p>
+              </div>
+            {% endfor %}
+            </div>
+           
+          </div>
+        </div>
+      </div>
+    </div>
+      
+      <!-- Bootstrap JS (Popper.js and Bootstrap JS) -->
+      <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    
+      <script>
+        function openModal(projectId) {
+          console.log(projectId)
+          $.ajax({
+            type: 'GET',
+            url: '{% url "add_task" %}',
+            data: {
+              project_Id: projectId,
+            },
+            success: function (response) {
+              $('#addtask').modal('show');
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
+
+        }
+    </script>
+    <script>
+      $(document).ready(function() {
+        $('#addtaskForm').submit(function(event) {
+          event.preventDefault(); 
+    
+          var formData = new FormData(this);
+  
+          $.ajax({
+            type: 'POST',
+            url: '{% url 'add_task' %}', 
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(data) {
+  
+                $('#addtask').modal('hide');
+                $('#addtaskForm')[0].reset();
+                location.reload();
+  
+            }
+          });
+        });
+      });
+    </script>
+      <script>
+        // Add an event listener to each project link
+        document.querySelectorAll('.project-link').forEach(function (link) {
+            link.addEventListener('click', function () {
+                // Remove 'active-link' class from all links
+                document.querySelectorAll('.project-link').forEach(function (el) {
+                    el.classList.remove('active-link');
+                });
+    
+                // Add 'active-link' class to the clicked link
+                link.classList.add('active-link');
+            });
+        });
+    </script>
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          // Retrieve the stored position of the image
+          var storedPosition = localStorage.getItem("imagePosition");
+          if (storedPosition) {
+            var image = document.getElementById("drag1");
+            var div = document.getElementById(storedPosition);
+            if (div) {
+              div.appendChild(image);
+            }
+          }
+        });
+      
+        var userRole = "{{ request.user.role }}";
+
+        function taskModal(task_id) {
+          console.log(task_id)
+          $.ajax({
+            type: 'GET',
+            url: '{% url "update_task" %}',
+            data: {
+              taskID:task_id
+            },
+            success: function (response) {
+              console.log("======",response)
+              const data = response.data;
+              $('#updatetaskForm input[name="name"]').val(data.name);
+              $('#updatetaskForm textarea[name="description"]').val(data.description);
+              $('#updatetask').modal('show');
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
+
+        }
+
+        $(document).ready(function() {
+          $('#updatetaskForm').submit(function(event) {
+            event.preventDefault(); 
+      
+            var formData = new FormData(this);
+    
+            $.ajax({
+              type: 'POST',
+              url: '{% url "update_task" %}', 
+              data: formData,
+              processData: false,
+              contentType: false,
+              success: function(data) {
+    
+                  $('#updatetask').modal('hide');
+                  $('#updatetaskForm')[0].reset();
+                  location.reload();
+    
+              }
+            });
+          });
+        });
+
+        function allowDrop(ev) {
+            if (event.target.tagName.toLowerCase() !== 'h6') {
+              event.preventDefault();
+          }
+        }
+        function drag(ev) {
+          // Check if the user has a role before allowing the drag
+          if (userRole !== "") {
+              ev.dataTransfer.setData("text", ev.target.id);
+          }
+      }
+      function drop(ev, status) {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("text");
+        var targetDiv = ev.target;
+    
+        // Check if the user has a role before allowing the drop
+        if (userRole !== "") {
+            var draggedElement = document.getElementById(data);
+    
+            // Set margin-bottom for the dropped element
+            draggedElement.style.marginBottom = "10px";
+    
+            // Check if the targetDiv is a p element, if so, append to its parent
+            if (targetDiv.tagName.toLowerCase() === "p") {
+                targetDiv.parentElement.appendChild(draggedElement);
+            } else {
+                targetDiv.appendChild(draggedElement);
+            }
+    
+            // Store the position of the image
+            localStorage.setItem("imagePosition", targetDiv.id);
+    
+            // Update the status in the database
+            var taskId = data.split("_")[1];
+            updateStatus(taskId, status);
+        }
+    }
+    
+        function updateStatus(taskId, status) {
+          if ("{{ request.user.role }}" === "") {
+            console.error("User has no role. Cannot update task status.");
+            return;
+        }
+    
+        var userRole = "{{ request.user.role }}";
+    
+        // ... (existing code)
+    
+        function drag(ev) {
+            // Check if the user has a role before allowing the drag
+            if (userRole === "") {
+                console.error("User has no role. Cannot drag and drop tasks.");
+                ev.preventDefault();
+                return;
+            }
+        
+    
+          ev.dataTransfer.setData("text", ev.target.id);
+      }
+            fetch(`/update_status/${taskId}/${status}/`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'),
+              },
+              body: JSON.stringify({}),
+            })
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+              }
+              return response.json();
+            })
+            .then(data => {
+              if (data.success) {
+                console.log('Task status updated successfully');
+              } else {
+                console.error('Failed to update task status:', data.message);
+              }
+            })
+            .catch(error => console.error('Error:', error));
+          }
+          
+          function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+              var cookies = document.cookie.split(';');
+              for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+                }
+              }
+            }
+            return cookieValue;
+          }
+          
+          (function () {
+            'use strict'
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+              new bootstrap.Tooltip(tooltipTriggerEl)
+            })
+          })()
+          
+      </script>
+      <script src="/docs/5.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+              
+      <script src="sidebars.js"></script>
+
+      <!-- Include jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+$(document).ready(function() {
+  $('.project-link').on('click', function(e) {
+    e.preventDefault();
+
+    var projectId = $(this).data('project-id');
+    $('.draggable-item p').hide();
+
+    console.log(projectId, "========");
+
+    // Fetch project data using AJAX
+    $.ajax({
+      url: '/get_project_data/' + projectId + '/',  // Replace with your Django URL pattern
+      type: 'GET',
+      success: function(data) {
+
+        // Check if 'tasks' property exists and is an array
+        if (data.tasks && Array.isArray(data.tasks)) {
+          console.log('Tasks array exists and is not empty');
+
+          data.tasks.forEach(function(task, i) {
+            var container = $('#drag_' + task.task_id);
+             
+
+            if (container.length) {
+              var taskInfo = `${task.project_name}\n${task.description ? 'Description: ' + task.description + '\n' : ''}Assigned by: ${task.assigned_by.username}\nAssigned to: ${task.assigned_to.username}`;
+
+              container.find('p').text(taskInfo).css({
+                'text-align': 'center',
+                'white-space': 'pre-line'
+              }).show();
+
+            } else {
+              console.error('Container not found for task ID: ' + task.task_id);
+            }
+          });
+        } else {
+          console.error('Invalid or missing "tasks" property in the data:', data);
+        }
+      },
+      error: function(error) {
+        console.error('Error fetching project data:', error);
+      }
+    });
+  });
+});
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+{% comment %} 
+{% for task in tasks %}
+<div>
+    <p>{{ task.name }}</p>
+    <p>Status: {{ task.status }}</p>
+    {% if user.role == 'admin' or user.role == 'manager' %}
+
+        
+        <a href="{% url 'delete_task' task.id %}">Delete</a>
+    {% else %}
+    <a href="{% url 'update_task' task.id %}">Update</a>
+    {% endif %}
+</div>
+{% endfor %} {% endcomment %}
